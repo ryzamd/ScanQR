@@ -140,31 +140,10 @@ class _TemporaryScreenState extends State<TemporaryScreen>
                 // Thêm một anonymous async function
                 final result = await CustomDialog.warning(
                   context: context,
-                  title: Text(
-                    'WARNING',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  message: 'Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?',
-                  confirmLabel: Text(
-                    'CONFIRM',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  cancelLabel: Text(
-                    'CANCEL',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  title: "Warning",
+                  message: "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
+                  confirmLabel: null,
+                  cancelLabel: null,
                   onConfirm: () {
                     _clearScannedData(); // Gọi hàm xóa dữ liệu
                   },

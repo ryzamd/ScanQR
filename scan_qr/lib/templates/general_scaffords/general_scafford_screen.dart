@@ -5,7 +5,7 @@ import 'package:scan_qr/utilites/contants/style_contants.dart';
 /// nó tạo ra một Scaffold với AppBar có tiêu đề tùy chỉnh, nút back (nếu cần)
 /// và các phần tùy chọn khác.
 class GeneralScreenScaffold extends StatelessWidget {
-  final Text? title;
+  final Widget? title;
   final bool showBackButton;
   final bool isSubScreen;
   final Widget body;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/routes/routes_system.dart';
 import 'package:scan_qr/templates/dialogs/custom_dialogs.dart';
 import 'package:scan_qr/templates/general_scaffords/general_scafford_screen.dart';
 import 'package:scan_qr/templates/navbars/navbar_widget.dart';
-import 'package:scan_qr/views/dashboard/outbound/out_bound_component_widgets.dart';
 import 'package:scan_qr/views/dashboard/outbound/outbound_category_scan/outbound_category_scan_screen.dart';
 
 class OutBoundScreen extends StatefulWidget {
@@ -23,11 +23,20 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
   final GlobalKey<OutboundCategoryScanScreenState> _scanScreenKey =
       GlobalKey<OutboundCategoryScanScreenState>();
 
+  bool checkIsSubScreen() {
+    return _currentNestedRoute != AppRouter.outboundScan;
+  }
+
   void _handleBackButton() {
     final navigator = _nestedNavKey.currentState;
     if (navigator != null && navigator.canPop()) {
+      // Nếu nested navigator có thể pop, thực hiện pop
       navigator.pop();
+    } else if (_currentNestedRoute != AppRouter.outboundMain) {
+      // Nếu hiện tại không phải ở màn hình chính của OutBound, thì quay lại màn hình đó
+      navigator?.pushReplacementNamed(AppRouter.outboundMain);
     } else {
+      // Chỉ pop ra ngoài OutBound nếu đang ở màn hình outboundMain
       Navigator.of(context).pop();
     }
   }
@@ -57,20 +66,30 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
   @override
   Widget build(BuildContext context) {
     return GeneralScreenScaffold(
-      title: const Text(
-        "OUTBOUND CATEGORY",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+      title: Row(
+        children: [
+          Expanded(
+            child: Align(
+              alignment:
+                  checkIsSubScreen() ? Alignment(-0.5,0) : Alignment.center,
+              child: const Text(
+                "OUTBOUND CATEGORY",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      showBackButton: true,
       isSubScreen: false,
+      showBackButton: checkIsSubScreen(),
       actions: [
-        if (_currentNestedRoute == '/outbound-scan')
+        if (_currentNestedRoute == AppRouter.outboundScan)
           Row(
-            mainAxisSize: MainAxisSize.min, // Giữ layout gọn nhất có thể
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: Icon(
@@ -82,87 +101,34 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
               IconButton(
                 icon: const Icon(Icons.delete_outline),
                 onPressed: () async {
-                  // Thêm một anonymous async function
-                  final result = await CustomDialog.warning(
+                  await CustomDialog.warning(
                     context: context,
-                    title: Text(
-                      'WARNING',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    title: "Warning",
                     message:
-                        'Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?',
-                    confirmLabel: Text(
-                      'CONFIRM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    cancelLabel: Text(
-                      'CANCEL',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                        "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
+                    confirmLabel: null,
+                    cancelLabel: null,
                     onConfirm: () {
-                      _clearScannedData(); // Gọi hàm xóa dữ liệu
+                      _clearScannedData();
                     },
                   );
-
-                  if (result == true) {
-                    // Nếu người dùng đã xác nhận, thực hiện xóa
-                    _clearScannedData();
-                  }
                 },
                 tooltip: "Clear all scanned items",
               ),
               IconButton(
                 icon: const Icon(Icons.directions_run),
                 onPressed: () async {
-                  // Thêm một anonymous async function
-                  final result = await CustomDialog.warning(
+                  await CustomDialog.warning(
                     context: context,
-                    title: Text(
-                      'WARNING',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    message: 'Bạn có chắc chắn muốn trở lại?',
-                    confirmLabel: Text(
-                      'CONFIRM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    cancelLabel: Text(
-                      'CANCEL',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    title: "Warning",
+                    message:
+                        "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
+                    confirmLabel: null,
+                    cancelLabel: null,
                     onConfirm: () {
-                      _handleBackButton(); // Gọi hàm xóa dữ liệu
+                      _handleBackButton();
                     },
                   );
-
-                  if (result == true) {
-                    // Nếu người dùng đã xác nhận, thực hiện xóa
-                    _handleBackButton();
-                  }
                 },
               ),
             ],
@@ -174,18 +140,14 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
         observers: [
           NestedNavigatorObserver(
             onNavigation: (Route<dynamic>? route) {
-              // Sau khi push/pop xong (post frame callback), ta mới setState
               if (!mounted) return;
               if (route is MaterialPageRoute && route.settings.name != null) {
                 final routeName = route.settings.name!;
-                // Bỏ qua nếu routeName == '/' (của top-level)
-                // hoặc routeName == null
                 if (routeName.startsWith('/outbound-')) {
                   setState(() {
                     _currentNestedRoute = routeName;
                   });
                 } else {
-                  // Nếu là route top-level hoặc popup => đặt _currentNestedRoute = null
                   setState(() {
                     _currentNestedRoute = null;
                   });
@@ -194,40 +156,32 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
             },
           ),
         ],
-        initialRoute: '/outbound-main',
+        initialRoute: AppRouter.outboundMain,
         onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case '/outbound-main':
-              return MaterialPageRoute(
-                settings: settings,
-                builder:
-                    (context) =>
-                        OutBoundComponentWidgets.buildSelectType(context),
-              );
-            case '/outbound-scan':
-              return MaterialPageRoute(
-                settings: settings,
-                builder:
-                    (context) => OutboundCategoryScanScreen(
-                      key: _scanScreenKey,
-                      onCameraToggle: () {
-                        setState(() {
-                          _cameraActive = !_cameraActive;
-                        });
-                      },
-                      onClearData: () {
-                        // If needed, update any state in the parent related to cleared data
-                      },
-                    ),
-              );
-            default:
-              return MaterialPageRoute(
-                settings: settings,
-                builder:
-                    (context) =>
-                        OutBoundComponentWidgets.buildSelectType(context),
-              );
+          // Sử dụng route manager cho nested routes
+          if (settings.name == AppRouter.outboundScan) {
+            // Truyền các tham số cần thiết
+            final args = {
+              'key': _scanScreenKey,
+              'onCameraToggle': () {
+                setState(() {
+                  _cameraActive = !_cameraActive;
+                });
+              },
+              'onClearData': () {
+                // Cập nhật state nếu cần
+              },
+            };
+
+            final updatedSettings = RouteSettings(
+              name: settings.name,
+              arguments: args,
+            );
+
+            return AppRouter.onGenerateOutboundRoute(updatedSettings);
           }
+
+          return AppRouter.onGenerateOutboundRoute(settings);
         },
       ),
       bottomNavigationBar: const NavbarWidget(),
@@ -244,7 +198,6 @@ class NestedNavigatorObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     debugPrint('didPush: ${route.settings.name}');
     super.didPush(route, previousRoute);
-    // Gọi callback sau khi push hoàn tất
     WidgetsBinding.instance.addPostFrameCallback((_) {
       onNavigation(route);
     });
