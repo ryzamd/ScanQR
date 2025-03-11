@@ -20,15 +20,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       title: Text(
         "DASH BOARD",
         style: const TextStyle(
-          color: Colors.black,
+          color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
       isSubScreen: false,
       showBackButton: false,
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -47,7 +46,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ),
           ),
         ),
-      ),
       bottomNavigationBar: NavbarWidget(),
     );
   }
