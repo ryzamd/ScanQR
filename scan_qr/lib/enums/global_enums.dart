@@ -4,4 +4,5 @@ enum DialogType {
   error,
   success,
   notice,
+  exit,
 }
