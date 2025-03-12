@@ -122,7 +122,7 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
                     context: context,
                     title: "Warning",
                     message:
-                        "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
+                        "Are you sure about deleting all the scanned data?",
                     confirmLabel: null,
                     cancelLabel: null,
                     onConfirm: () {

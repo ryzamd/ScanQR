@@ -73,12 +73,12 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       child: Table(
         columnWidths: const {
-          0: FixedColumnWidth(30),
-          1: FixedColumnWidth(50),
-          2: FixedColumnWidth(70),
-          3: FixedColumnWidth(60),
-          4: FixedColumnWidth(80),
-          5: FixedColumnWidth(50),
+            0: FixedColumnWidth(40),
+            1: FixedColumnWidth(50),
+            2: FixedColumnWidth(70),
+            3: FixedColumnWidth(60),
+            4: FixedColumnWidth(80),
+            5: FixedColumnWidth(60),
         },
         children: [
           TableRow(

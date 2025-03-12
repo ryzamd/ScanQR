@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/routes/routes_system.dart';
 import 'package:scan_qr/utilites/contants/title_contants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -160,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    Navigator.pushNamed(context, '/dashboard');
+                                    Navigator.pushReplacementNamed(context, AppRouter.dashboard);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

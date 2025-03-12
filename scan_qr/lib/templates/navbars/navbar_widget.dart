@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/routes/routes_system.dart';
 
 class NavbarWidget extends StatelessWidget {
   const NavbarWidget({super.key});
@@ -32,14 +33,17 @@ class NavbarWidget extends StatelessWidget {
       selectedIndex: selectedIndex,
       onDestinationSelected: (int value) {
         // Nếu màn hình hiện tại khác với màn hình được chọn, chuyển hướng.
-        if (value == 0 && ModalRoute.of(context)?.settings.name != '/process') {
-          Navigator.pushReplacementNamed(context, '/process');
+        if (value == 0 && ModalRoute.of(context)?.settings.name != AppRouter.process) {
+          debugPrint('Setting route name: ${ModalRoute.of(context)?.settings.name}');
+          Navigator.pushReplacementNamed(context, AppRouter.process);
         } else if (value == 1 &&
-            ModalRoute.of(context)?.settings.name != '/dashboard') {
-          Navigator.pushReplacementNamed(context, '/dashboard');
+            ModalRoute.of(context)?.settings.name != AppRouter.dashboard) {
+              debugPrint('Setting route name: ${ModalRoute.of(context)?.settings.name}');
+          Navigator.pushReplacementNamed(context, AppRouter.dashboard);
         } else if (value == 2 &&
-            ModalRoute.of(context)?.settings.name != '/personal') {
-          Navigator.pushReplacementNamed(context, '/personal');
+            ModalRoute.of(context)?.settings.name != AppRouter.personal) {
+              debugPrint('Setting route name: ${ModalRoute.of(context)?.settings.name}');
+          Navigator.pushReplacementNamed(context, AppRouter.personal);
         }
       },
     );
