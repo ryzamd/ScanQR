@@ -1,305 +1,300 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/utilites/contants/style_contants.dart';
 
-class PersonalProfileScreen extends StatefulWidget {
+class PersonalProfileScreen extends StatelessWidget {
   const PersonalProfileScreen({super.key});
 
   @override
-  State<PersonalProfileScreen> createState() => _PersonalProfileScreenState();
-}
-
-class _PersonalProfileScreenState extends State<PersonalProfileScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  String? _selectedGender;
-  DateTime? _selectedDate;
-
-  final List<String> genders = ['Male', 'Female', 'Other'];
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _usernameController.dispose();
-    _bioController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF7165E3),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF171717),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Example user data - replace with your actual data source
+    final userData = {
+      'id': 'UWH09999999',
+      'fullName': 'USER TEST',
+      'dateOfBirth': '01/01/0001',
+      'age': '25',
+      'department': 'Engineering',
+      'position': 'Senior Developer',
+    };
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF171717)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          'Profile',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF171717),
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile photo
-            Center(
-              child: Stack(
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: Column(
+        children: [
+          // Fixed red header with account info
+          Container(
+            color: ColorsConstants.primaryColor,
+            child: SafeArea(
+              bottom: false,
+              child: Column(
                 children: [
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(60),
+                  // App bar with back button and title
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
-                    child: const Icon(
-                      Icons.person_outline,
-                      size: 60,
-                      color: Color(0xFF6F6F6F),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'PROFILE',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Empty space to balance the back button
+                        SizedBox(width: 48),
+                      ],
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF7165E3),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
-            
-            // Name input
-            const Text(
-              'Name',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF171717),
+          ),
+
+          // User profile card - fixed at top
+          Transform(
+            transform: Matrix4.translationValues(0, -20, 0),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your name',
-                hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
-                filled: true,
-                fillColor: const Color(0xFFF3F4F6),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Username input
-            const Text(
-              'Username',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF171717),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your username',
-                hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
-                filled: true,
-                fillColor: const Color(0xFFF3F4F6),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Date of birth
-            const Text(
-              'Date of Birth',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF171717),
-              ),
-            ),
-            const SizedBox(height: 8),
-            GestureDetector(
-              onTap: () => _selectDate(context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF3F4F6),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      _selectedDate == null
-                          ? 'Select your date of birth'
-                          : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                      style: TextStyle(
-                        color: _selectedDate == null ? const Color(0xFF9E9E9E) : const Color(0xFF171717),
+                    // Profile image
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 50,
+                        color: Colors.grey,
                       ),
                     ),
-                    const Icon(Icons.calendar_today, color: Color(0xFF9E9E9E), size: 20),
+                    const SizedBox(width: 16),
+                    // Profile information
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userData['fullName']!,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF333333),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            userData['id']!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF666666),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.home_repair_service,
+                                size: 18,
+                                color: Colors.pink[300],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Department: ${userData['department']}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.pink[300],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.workspace_premium,
+                                size: 18,
+                                color: Colors.green,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Position: ${userData['position']}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            
-            // Gender
-            const Text(
-              'Gender',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF171717),
+          ),
+
+          // Scrollable form section
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Personal information section
+                  _buildSectionTitle('User Information'),
+                  _buildInfoCard([
+                    _buildInfoField('Full Name', userData['fullName']!),
+                    _buildInfoField('DOB', userData['dateOfBirth']!),
+                  ]),
+
+                  const SizedBox(height: 10),
+
+                  // ID document information
+                  _buildSectionTitle('Thông tin giấy tờ'),
+                  _buildInfoCard([
+                    _buildInfoField(
+                      'Số CMND/CCCD/Hộ chiếu',
+                      userData['fullName']!,
+                    ),
+                    _buildInfoField('Ngày cấp', userData['fullName']!),
+                    _buildInfoField('Nơi cấp', userData['fullName']!),
+                  ]),
+
+                  const SizedBox(height: 10),
+
+                  // ID document information
+                  _buildSectionTitle('Thông tin giấy tờ'),
+                  _buildInfoCard([
+                    _buildInfoField(
+                      'Số CMND/CCCD/Hộ chiếu',
+                      userData['fullName']!,
+                    ),
+                    _buildInfoField('Ngày cấp', userData['fullName']!),
+                    _buildInfoField('Nơi cấp', userData['fullName']!),
+                  ]),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  hint: const Text(
-                    'Select your gender',
-                    style: TextStyle(color: Color(0xFF9E9E9E)),
-                  ),
-                  value: _selectedGender,
-                  items: genders.map((String gender) {
-                    return DropdownMenuItem<String>(
-                      value: gender,
-                      child: Text(gender),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedGender = newValue;
-                    });
-                  },
-                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF9E9E9E)),
-                  dropdownColor: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Bio
-            const Text(
-              'Bio',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF171717),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _bioController,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'Write something about yourself',
-                hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
-                filled: true,
-                fillColor: const Color(0xFFF3F4F6),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.all(16),
-              ),
-            ),
-            const SizedBox(height: 40),
-            
-            // Save button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle save profile
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7165E3),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper methods
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF333333),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(List<Widget> children) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: List.generate(children.length, (index) {
+          // Thêm khoảng cách giữa các field
+          if (index < children.length - 1) {
+            return Column(
+              children: [
+                children[index],
+                const SizedBox(height: 12), // Spacing giữa các field
+              ],
+            );
+          }
+          return children[index];
+        }),
+      ),
+    );
+  }
+
+  Widget _buildInfoField(String label, String value) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300, // Màu nền làm mờ để cho biết là read-only
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              top: 8,
+              bottom: 4,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

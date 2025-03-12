@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/routes/routes_system.dart';
 
 class DashboardWidgets {
   static Widget buildHeader(BuildContext context) {
@@ -40,13 +41,13 @@ class DashboardWidgets {
         _buildCardButton(
           context: context,
           label: "TEMPORARY",
-          onPressed: () => Navigator.pushNamed(context, '/temporary'),
+          onPressed: () => Navigator.pushNamed(context, AppRouter.temporary),
         ),
         const SizedBox(width: 16), // khoảng cách giữa hai button
         _buildCardButton(
           context: context,
           label: "OUTBOUND",
-          onPressed: () => Navigator.pushNamed(context, '/outbound'),
+          onPressed: () => Navigator.pushNamed(context, AppRouter.outbound),
         ),
       ],
     );

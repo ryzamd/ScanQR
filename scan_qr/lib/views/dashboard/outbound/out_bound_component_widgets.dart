@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_qr/routes/routes_system.dart';
 import 'out_bound_business.dart';
 
 class OutBoundComponentWidgets {
@@ -163,7 +164,7 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     return GestureDetector(
       onTap: () {
         // Chuyển hướng sang màn hình scan
-        Navigator.pushNamed(context, '/outbound-scan');
+        Navigator.pushNamed(context, AppRouter.outboundScan);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),

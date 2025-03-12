@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scan_qr/utilites/contants/title_contants.dart';
+import 'package:scan_qr/routes/routes_system.dart';
+import 'package:scan_qr/utilites/contants/string_contants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: TitleConstant.userNameLoginTitle,
+                                  hintText: StringKey.userNameLoginTitle,
                                   hintStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.7),
                                   ),
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 obscureText: _obscurePassword,
                                 style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: TitleConstant.passwordLoginTitle,
+                                  hintText: StringKey.passwordLoginTitle,
                                   hintStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.7),
                                   ),
@@ -160,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    Navigator.pushNamed(context, '/dashboard');
+                                    Navigator.pushReplacementNamed(context, AppRouter.dashboard);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scan_qr/enums/global_enums.dart';
+import 'package:scan_qr/utilites/contants/style_contants.dart';
 
 class CustomDialog {
   static Future<bool?> show({
@@ -27,7 +28,7 @@ class CustomDialog {
         confirmButtonColor = Colors.red;
         break;
       case DialogType.error:
-        titleColor = Colors.amber.shade900; // Deep yellow
+        titleColor = Colors.amber.shade900;
         confirmButtonColor = Colors.amber.shade900;
         break;
       case DialogType.success:
@@ -35,9 +36,12 @@ class CustomDialog {
         confirmButtonColor = Colors.green;
         break;
       case DialogType.notice:
-        titleColor = Colors.black;
-        confirmButtonColor = Colors.black;
+        titleColor = ColorsConstants.primaryColor;
+        confirmButtonColor = ColorsConstants.primaryColor;
         break;
+      case DialogType.exit:
+        titleColor = Colors.red;
+        confirmButtonColor = Colors.red;
     }
 
     // Calculate button width based on isHasCancelButton
@@ -49,102 +53,6 @@ class CustomDialog {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        //       return AlertDialog(
-        //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        //         insetPadding: const EdgeInsets.all(25),
-        //         contentPadding: const EdgeInsets.all(10),
-        //         titlePadding: const EdgeInsets.only(top: 15, left: 15),
-        //         actionsPadding: const EdgeInsets.all(15),
-        //         title: SizedBox(
-        //           child: Text(
-        //             title.toUpperCase(),
-        //             style: TextStyle(
-        //               color: titleColor,
-        //               fontSize: 18,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //           ),
-        //         ),
-        //         content: Padding(
-        //           padding: const EdgeInsets.all(10),
-        //           child: Text(
-        //             message,
-        //             textAlign: TextAlign.center,
-        //             style: TextStyle(
-        //               fontSize: 16,
-        //             ),
-        //           ),
-        //         ),
-        //         actions: <Widget>[
-        //           Row(
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               if (isHasCancelButton == true) ...[
-        //                 SizedBox(
-        //                   width: 120,
-        //                   height: 40,
-        //                   child: ElevatedButton(
-        //                     style: ButtonStyle(
-        //                       backgroundColor: WidgetStateProperty.all<Color>(
-        //                         Colors.grey,
-        //                       ),
-        //                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-        //                         RoundedRectangleBorder(
-        //                           borderRadius: BorderRadius.circular(5),
-        //                         ),
-        //                       ),
-        //                     ),
-        //                     child: cancelLabel ?? const Text(
-        //                       'CANCEL',
-        //                       style: TextStyle(
-        //                         color: Colors.black,
-        //                         fontWeight: FontWeight.bold,
-        //                       ),
-        //                     ),
-        //                     onPressed: () {
-        //                       onCancel?.call();
-        //                       Navigator.of(context).pop(false);
-        //                     },
-        //                   ),
-        //                 ),
-        //                 const SizedBox(width: 40),
-        //               ],
-
-        //               SizedBox(
-        //                 width: confirmButtonWidth,
-        //                 height: 40,
-        //                 child: ElevatedButton(
-        //                   style: ButtonStyle(
-        //                     backgroundColor: WidgetStateProperty.all<Color>(
-        //                       confirmButtonColor,
-        //                     ),
-        //                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-        //                       RoundedRectangleBorder(
-        //                         borderRadius: BorderRadius.circular(5),
-        //                       ),
-        //                     ),
-        //                   ),
-        //                   child: confirmLabel ?? const Text(
-        //                     'CONFIRM',
-        //                     style: TextStyle(
-        //                       color: Colors.white,
-        //                       fontWeight: FontWeight.bold,
-        //                     ),
-        //                   ),
-        //                   onPressed: () {
-        //                     onConfirm?.call();
-        //                     Navigator.of(context).pop(true);
-        //                   },
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         ],
-        //       );
-        //     },
-        //   );
-        // }
-
         return Dialog(
           insetPadding: const EdgeInsets.all(35),
           child: Container(
@@ -380,6 +288,29 @@ class CustomDialog {
       title: title,
       message: message,
       type: DialogType.notice,
+      isHasCancelButton: isHasCancelButton,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
+    );
+  }
+
+    static Future<bool?> exit({
+    required BuildContext context,
+    required String title,
+    required String message,
+    bool? isHasCancelButton = true,
+    Widget? confirmLabel,
+    Widget? cancelLabel,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) {
+    return show(
+      context: context,
+      title: title,
+      message: message,
+      type: DialogType.exit,
       isHasCancelButton: isHasCancelButton,
       confirmLabel: confirmLabel,
       cancelLabel: cancelLabel,
