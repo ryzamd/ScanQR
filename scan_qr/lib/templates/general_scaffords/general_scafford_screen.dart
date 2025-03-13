@@ -8,6 +8,7 @@ class GeneralScreenScaffold extends StatelessWidget {
   final Widget? title;
   final bool showBackButton;
   final bool isSubScreen;
+  final bool? resizeToAvoidBottomInset;
   final Widget body;
   final Widget? bottomNavigationBar;
   final List<Widget>? actions;
@@ -20,6 +21,7 @@ class GeneralScreenScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.actions,
     required this.isSubScreen,
+    this.resizeToAvoidBottomInset,
   });
 
   @override
@@ -55,6 +57,7 @@ class GeneralScreenScaffold extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.black),
         actions: actionButtons,
       ),
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: SafeArea(child: body),
       bottomNavigationBar: bottomNavigationBar,
     );
