@@ -3,7 +3,7 @@ import 'package:scan_qr/templates/dialogs/custom_dialogs.dart';
 
 class ProcessComponentWidgets {
   static Widget buildProcessingTable(BuildContext context) {
-    return const ProcessingTableWidget();
+    return ProcessingTableWidget();
   }
 }
 
@@ -15,32 +15,10 @@ class ProcessingTableWidget extends StatefulWidget {
 }
 
 class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
-  // Danh sách dữ liệu cho bảng
   final List<ProcessRecord> _records = [
-    ProcessRecord(
-      sn: "1",
-      supplier: "PRIMO",
-      time: "17:11:00 PM",
-      date: "02/28/25",
-      status: "SUCCESS",
-      total: "50",
-    ),
-    ProcessRecord(
-      sn: "2",
-      supplier: "PRIMO",
-      time: "17:11:00 PM",
-      date: "02/28/25",
-      status: "FAILED",
-      total: "50",
-    ),
-    ProcessRecord(
-      sn: "3",
-      supplier: "PRIMO",
-      time: "17:11:00 PM",
-      date: "02/28/25",
-      status: "PENDDING",
-      total: "50",
-    ),
+    ProcessRecord(sn: "1", supplier: "PRIMO", time: "17:11:00 PM", date: "02/28/25", status: "SUCCESS",  total: "50"),
+    ProcessRecord(sn: "2", supplier: "PRIMO", time: "17:11:00 PM", date: "02/28/25", status: "FAILED",   total: "50"),
+    ProcessRecord(sn: "3", supplier: "PRIMO", time: "17:11:00 PM", date: "02/28/25", status: "PENDDING", total: "50"),
   ];
 
   @override
@@ -50,35 +28,34 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       padding: const EdgeInsets.all(5.0),
       child: Column(
         children: [
-          // Header của bảng
-          _buildTableHeader(),
-
-          // Body của bảng
-          SizedBox(height: 3),
+          // Header
+          _buildTableHeader(context),
+          const SizedBox(height: 3),
+          // Body
           Expanded(child: _buildTableContent(context)),
         ],
       ),
     );
   }
 
-  /// ---------------------------
-  /// 1. Header của bảng
-  /// ---------------------------
-  Widget _buildTableHeader() {
+  /// 1. Header
+  Widget _buildTableHeader(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Xác định tỉ lệ cho 6 cột, tổng cộng = 1.0
+    // Ví dụ: SN=0.1, Sup=0.15, Time=0.15, Date=0.15, Status=0.25, Total=0.2
+    final columnRatios = [0.1, 0.15, 0.15, 0.15, 0.25, 0.2];
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.circular(5),
       ),
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       child: Table(
-        columnWidths: const {
-            0: FixedColumnWidth(40),
-            1: FixedColumnWidth(50),
-            2: FixedColumnWidth(70),
-            3: FixedColumnWidth(60),
-            4: FixedColumnWidth(80),
-            5: FixedColumnWidth(60),
+        // Thay vì cố định, ta dùng width * tỉ_lệ
+        columnWidths: {
+          for (int i = 0; i < columnRatios.length; i++)
+            i: FixedColumnWidth(screenWidth * columnRatios[i]),
         },
         children: [
           TableRow(
@@ -96,9 +73,7 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 2. Content của bảng (ListView)
-  /// ---------------------------
+  /// 2. Body (ListView)
   Widget _buildTableContent(BuildContext context) {
     return ListView.separated(
       itemCount: _records.length,
@@ -107,20 +82,13 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       itemBuilder: (context, index) {
         final record = _records[index];
         final bgColor = index % 2 == 0 ? Colors.grey[600]! : Colors.grey[700]!;
-
         return _buildTableRow(context, record, bgColor);
       },
     );
   }
 
-  /// ---------------------------
-  /// 3. Dòng dữ liệu
-  /// ---------------------------
-  Widget _buildTableRow(
-    BuildContext context,
-    ProcessRecord record,
-    Color bgColor,
-  ) {
+  /// 3. Row data
+  Widget _buildTableRow(BuildContext context, ProcessRecord record, Color bgColor) {
     Color statusColor;
     if (record.status == "SUCCESS") {
       statusColor = Colors.green;
@@ -130,22 +98,21 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       statusColor = Colors.orange;
     }
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final columnRatios = [0.1, 0.15, 0.15, 0.15, 0.25, 0.2];
+
     return GestureDetector(
       onLongPress: () => _handleRowTap(context, record),
       child: Container(
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(5), // Bo góc 5px
+          borderRadius: BorderRadius.circular(5),
         ),
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
         child: Table(
-          columnWidths: const {
-            0: FixedColumnWidth(30),
-            1: FixedColumnWidth(50),
-            2: FixedColumnWidth(70),
-            3: FixedColumnWidth(60),
-            4: FixedColumnWidth(80),
-            5: FixedColumnWidth(50),
+          columnWidths: {
+            for (int i = 0; i < columnRatios.length; i++)
+              i: FixedColumnWidth(screenWidth * columnRatios[i]),
           },
           children: [
             TableRow(
@@ -164,9 +131,7 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// ---------------------------
   /// 4. Cell helper
-  /// ---------------------------
   Widget _buildHeaderCell(String title) {
     return Text(
       title,
@@ -180,14 +145,10 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
   }
 
   Widget _buildValueCell(String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return Text(
+      value,
+      style: const TextStyle(color: Colors.white, fontSize: 12),
+      textAlign: TextAlign.center,
     );
   }
 
@@ -199,9 +160,7 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 5. Xử lý sự kiện khi click vào dòng
-  /// ---------------------------
+  /// 5. Row tap
   void _handleRowTap(BuildContext context, ProcessRecord record) {
     switch (record.status) {
       case "SUCCESS":
@@ -214,7 +173,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
           onConfirm: () async {
             await Future.delayed(const Duration(milliseconds: 300));
             if (context.mounted) {
-              // Kiểm tra xem context có còn khả dụng không
               CustomDialog.notice(
                 context: context,
                 title: "Success",
@@ -224,9 +182,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
                 cancelLabel: null,
               );
             }
-          },
-          onCancel: () {
-            // Your cancel action here
           },
         );
         break;
@@ -238,12 +193,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
           isHasCancelButton: false,
           confirmLabel: null,
           cancelLabel: null,
-          onConfirm: () {
-            // Your confirm action here
-          },
-          onCancel: () {
-            // Your cancel action here
-          },
         );
         break;
       case "FAILED":
@@ -253,12 +202,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
           message: "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
           confirmLabel: null,
           cancelLabel: null,
-          onConfirm: () {
-            // Your confirm action here
-          },
-          onCancel: () {
-            // Your cancel action here
-          },
         );
         break;
       default:
@@ -266,9 +209,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
   }
 }
 
-/// ---------------------------
-/// Model cho dữ liệu bảng
-/// ---------------------------
 class ProcessRecord {
   final String sn;
   final String supplier;
