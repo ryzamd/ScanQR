@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:scan_qr/services/scan_save_data_service.dart';
 import 'package:scan_qr/templates/scanner_screens/scanner_screen.dart';
 import 'package:scan_qr/utilites/contants/style_contants.dart';
 
@@ -31,7 +32,8 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
 
   List<List<String>> scannedData = [];
 
-  bool _cameraActive = false; // Set to true to enable camera by default
+  bool _cameraActive = false;
+  bool _isSaving = false;
 
   // ignore: unused_field
   String? _scanError = "Error message";
@@ -137,6 +139,57 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
     // Call parent callback if provided
     if (widget.onClearData != null) {
       widget.onClearData!();
+    }
+  }
+
+     Future<void> saveScannedData() async {
+    if (scannedData.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No data to save'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isSaving = true;
+    });
+    
+    try {
+      final String filePath = await ScanDataSaverService.saveScannedData(scannedData);
+      
+      if (filePath.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data saved successfully to: $filePath'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        clearScannedData();
+        
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to save data'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Error in _saveScannedData: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving data: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isSaving = false;
+      });
     }
   }
 

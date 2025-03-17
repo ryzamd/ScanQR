@@ -34,6 +34,7 @@ class SharedScannerScreen extends StatefulWidget {
   final ButtonStyle? scanAgainButtonStyle;
   final String? errorMessage;
   final bool showBottomNavBar;
+  final List<Widget>? bottomActions;
 
   const SharedScannerScreen({
     super.key,
@@ -66,6 +67,7 @@ class SharedScannerScreen extends StatefulWidget {
     this.scanAgainButtonStyle,
     this.errorMessage,
     required this.showBottomNavBar,
+    this.bottomActions,
   });
 
   @override
@@ -74,6 +76,8 @@ class SharedScannerScreen extends StatefulWidget {
 
 class SharedScannerScreenState extends State<SharedScannerScreen>
     with WidgetsBindingObserver {
+    get bottomActions => [];
+    
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
@@ -194,6 +198,15 @@ class SharedScannerScreenState extends State<SharedScannerScreen>
                 label: const Text("Scan Again"),
               ),
             ),
+
+            if (bottomActions != null && bottomActions!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: bottomActions!,
+                ),
+              ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:scan_qr/services/scan_save_data_service.dart';
 import 'package:scan_qr/templates/dialogs/custom_dialogs.dart';
 import 'package:scan_qr/templates/scanner_screens/scanner_screen.dart';
 import 'package:scan_qr/templates/scanner_screens/scanner_styles.dart';
@@ -23,6 +24,7 @@ class _TemporaryScreenState extends State<TemporaryScreen>
   List<List<String>> scannedBarcodes = [];
   bool _cameraActive = false;
   String? _scanError;
+  bool _isSaving = false;
 
   void _onScanReceived(dynamic scanData) {
     debugPrint("📡 Real-time Scan Data: $scanData");
@@ -78,6 +80,57 @@ class _TemporaryScreenState extends State<TemporaryScreen>
     });
   }
 
+    Future<void> _saveScannedData() async {
+    if (scannedBarcodes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No data to save'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isSaving = true;
+    });
+    
+    try {
+      final String filePath = await ScanDataSaverService.saveScannedData(scannedBarcodes);
+      
+      if (filePath.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data saved successfully to: $filePath'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        _clearScannedData();
+        
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to save data'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Error in _saveScannedData: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving data: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isSaving = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,6 +174,16 @@ class _TemporaryScreenState extends State<TemporaryScreen>
         appBarColor: ColorsConstants.primaryColor,
         appBarElevation: 2.0,
         appBarActions: [
+           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            child: IconButton(
+              icon: _isSaving 
+                ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                : const Icon(Icons.save, color: Colors.black),
+              onPressed: _isSaving ? null : _saveScannedData,
+              tooltip: "Save scanned data",
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0),
             child: IconButton(
@@ -155,6 +218,27 @@ class _TemporaryScreenState extends State<TemporaryScreen>
                 }
               },
               tooltip: "Clear all scanned items",
+            ),
+          ),
+        ],
+        bottomActions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: ElevatedButton.icon(
+              icon: _isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Icon(Icons.save),
+              label: Text(_isSaving ? "Saving..." : "Save Data"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: _isSaving ? null : _saveScannedData,
             ),
           ),
         ],

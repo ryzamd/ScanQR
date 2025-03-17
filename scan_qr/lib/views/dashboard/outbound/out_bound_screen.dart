@@ -18,6 +18,7 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
 
   // Add state for camera active status
   bool _cameraActive = true;
+  bool _isSaving = false;
 
   // Create a key to access the scan screen state
   final GlobalKey<OutboundCategoryScanScreenState> _scanScreenKey =
@@ -63,6 +64,13 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
     }
   }
 
+  void _saveScanneData(){
+    final scanScreenState = _scanScreenKey.currentState;
+    if (scanScreenState != null) {
+      scanScreenState.saveScannedData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GeneralScreenScaffold(
@@ -91,6 +99,13 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              IconButton(
+              icon: _isSaving 
+                ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                : const Icon(Icons.save, color: Colors.black),
+              onPressed: _isSaving ? null : _saveScanneData,
+              tooltip: "Save scanned data",
+              ),
               IconButton(
                 icon: Icon(
                   _cameraActive ? Icons.camera_alt : Icons.camera_alt_outlined,
