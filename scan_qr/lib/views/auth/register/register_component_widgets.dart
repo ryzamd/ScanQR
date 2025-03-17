@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Hàm tạo InputDecoration chung
 InputDecoration buildInputDecoration({
   required BuildContext context,
   required String labelText,
@@ -37,7 +36,6 @@ InputDecoration buildInputDecoration({
   );
 }
 
-/// STEP 0: Thông tin cá nhân
 Widget buildPersonalInfoStep({
   required BuildContext context,
   required TextEditingController nameController,
@@ -127,7 +125,6 @@ Widget buildPersonalInfoStep({
   );
 }
 
-/// STEP 1: Thông tin tài khoản
 Widget buildAccountInfoStep({
   required BuildContext context,
   required TextEditingController usernameController,
@@ -159,7 +156,6 @@ Widget buildAccountInfoStep({
               const Divider(),
               const SizedBox(height: 8),
 
-              // Username
               TextFormField(
                 controller: usernameController,
                 autofocus: false,
@@ -180,7 +176,6 @@ Widget buildAccountInfoStep({
               ),
               const SizedBox(height: 16),
 
-              // Password
               TextFormField(
                 controller: passwordController,
                 obscureText: obscurePassword,
@@ -208,7 +203,6 @@ Widget buildAccountInfoStep({
               ),
               const SizedBox(height: 16),
 
-              // Confirm Password
               TextFormField(
                 controller: confirmPasswordController,
                 obscureText: obscureConfirmPassword,
@@ -260,7 +254,6 @@ Widget buildAccountInfoStep({
   );
 }
 
-/// STEP 2: Thông tin công việc
 Widget buildJobInfoStep({
   required BuildContext context,
   required String? selectedDepartment,
@@ -295,7 +288,6 @@ Widget buildJobInfoStep({
               const Divider(),
               const SizedBox(height: 8),
 
-              // Department
               DropdownButtonFormField<String>(
                 decoration: buildInputDecoration(
                   context: context,
@@ -319,7 +311,6 @@ Widget buildJobInfoStep({
               ),
               const SizedBox(height: 16),
 
-              // Position
               DropdownButtonFormField<String>(
                 decoration: buildInputDecoration(
                   context: context,
@@ -376,7 +367,6 @@ Widget buildJobInfoStep({
   );
 }
 
-/// Item hiển thị label: value
 Widget _buildInfoItem(String label, String value) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),

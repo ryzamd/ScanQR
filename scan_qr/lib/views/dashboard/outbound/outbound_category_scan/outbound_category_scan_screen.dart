@@ -1,4 +1,3 @@
-// outbound_category_scan_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -7,7 +6,6 @@ import 'package:scan_qr/templates/scanner_screens/scanner_screen.dart';
 import 'package:scan_qr/utilites/contants/style_contants.dart';
 
 class OutboundCategoryScanScreen extends StatefulWidget {
-  // Add callback parameters to handle actions from parent
   final VoidCallback? onCameraToggle;
   final VoidCallback? onClearData;
 
@@ -35,14 +33,13 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
   bool _cameraActive = false;
   bool _isSaving = false;
 
-  // ignore: unused_field
   String? _scanError = "Error message";
 
   void _onScanReceived(dynamic scanData) {
     debugPrint("📡 Real-time Scan Data: $scanData");
 
-    if (scanData == "❌ No Scan Data Found") {
-      debugPrint("⚠️ Ignoring invalid scan data.");
+    if (scanData == "No Scan Data Found") {
+      debugPrint("Ignoring invalid scan data.");
       return;
     }
 
@@ -55,7 +52,7 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
   }
 
   void _onScanError(Object error) {
-    debugPrint("❌ Error receiving scan data: $error");
+    debugPrint("Error receiving scan data: $error");
     setState(() {
       _scanError = "Failed to process scan: $error";
     });
@@ -124,19 +121,16 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
       }
     });
 
-    // Call parent callback if provided
     if (widget.onCameraToggle != null) {
       widget.onCameraToggle!();
     }
   }
 
-  // Add method to clear scanned data
   void clearScannedData() {
     setState(() {
       scannedData.clear();
     });
 
-    // Call parent callback if provided
     if (widget.onClearData != null) {
       widget.onClearData!();
     }
@@ -196,15 +190,14 @@ class OutboundCategoryScanScreenState extends State<OutboundCategoryScanScreen>
   @override
   Widget build(BuildContext context) {
     return SharedScannerScreen(
-      title: const Text(""), // Empty title since parent will show the title
-      showAppBar: false, // Changed to false to avoid duplicate AppBar
+      title: const Text(""),
+      showAppBar: false,
       scannerController: _controller,
       cameraActive: _cameraActive,
       onDetect: _onDetect,
       scannedData: scannedData,
       onScanAgain: _resetScanner,
       tableHeaderLabels: const ["Code", "Status", "Quantity", "Total"],
-      // Apply new UI customizations from enhanced SharedScannerScreen
       scannerSectionHeight: 160,
       scannerSectionWidth: 320,
       scannerBorderRadius: 12,

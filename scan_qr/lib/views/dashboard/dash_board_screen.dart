@@ -14,7 +14,6 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     final size = MediaQuery.of(context).size;
 
     return ExitConfirmationHelper.wrapWithExitConfirmation(

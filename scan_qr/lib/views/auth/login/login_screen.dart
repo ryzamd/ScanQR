@@ -203,7 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Footer
                   const Padding(
                     padding: EdgeInsets.only(bottom: 20),
                     child: Text(

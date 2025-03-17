@@ -6,7 +6,6 @@ class PersonalProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Example user data - replace with your actual data source
     final userData = {
       'id': 'UWH09999999',
       'fullName': 'USER TEST',
@@ -20,14 +19,12 @@ class PersonalProfileScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // Fixed red header with account info
           Container(
             color: ColorsConstants.primaryColor,
             child: SafeArea(
               bottom: false,
               child: Column(
                 children: [
-                  // App bar with back button and title
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -54,7 +51,6 @@ class PersonalProfileScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // Empty space to balance the back button
                         SizedBox(width: 48),
                       ],
                     ),
@@ -65,7 +61,6 @@ class PersonalProfileScreen extends StatelessWidget {
             ),
           ),
 
-          // User profile card - fixed at top
           Transform(
             transform: Matrix4.translationValues(0, -20, 0),
             child: Container(
@@ -86,7 +81,6 @@ class PersonalProfileScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Profile image
                     Container(
                       width: 80,
                       height: 80,
@@ -101,7 +95,6 @@ class PersonalProfileScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Profile information
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,14 +160,12 @@ class PersonalProfileScreen extends StatelessWidget {
             ),
           ),
 
-          // Scrollable form section
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Personal information section
                   _buildSectionTitle('User Information'),
                   _buildInfoCard([
                     _buildInfoField('Full Name', userData['fullName']!),
@@ -183,7 +174,6 @@ class PersonalProfileScreen extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // ID document information
                   _buildSectionTitle('Thông tin giấy tờ'),
                   _buildInfoCard([
                     _buildInfoField(
@@ -196,7 +186,6 @@ class PersonalProfileScreen extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // ID document information
                   _buildSectionTitle('Thông tin giấy tờ'),
                   _buildInfoCard([
                     _buildInfoField(
@@ -215,7 +204,6 @@ class PersonalProfileScreen extends StatelessWidget {
     );
   }
 
-  // Helper methods
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -245,12 +233,11 @@ class PersonalProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: List.generate(children.length, (index) {
-          // Thêm khoảng cách giữa các field
           if (index < children.length - 1) {
             return Column(
               children: [
                 children[index],
-                const SizedBox(height: 12), // Spacing giữa các field
+                const SizedBox(height: 12),
               ],
             );
           }
@@ -264,7 +251,7 @@ class PersonalProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey.shade300, // Màu nền làm mờ để cho biết là read-only
+        color: Colors.grey.shade300,
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey.shade300),
       ),

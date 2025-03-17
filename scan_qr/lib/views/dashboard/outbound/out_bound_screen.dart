@@ -16,11 +16,9 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
   final GlobalKey<NavigatorState> _nestedNavKey = GlobalKey<NavigatorState>();
   String? _currentNestedRoute;
 
-  // Add state for camera active status
   bool _cameraActive = true;
   bool _isSaving = false;
 
-  // Create a key to access the scan screen state
   final GlobalKey<OutboundCategoryScanScreenState> _scanScreenKey =
       GlobalKey<OutboundCategoryScanScreenState>();
 
@@ -31,33 +29,26 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
   void _handleBackButton() {
     final navigator = _nestedNavKey.currentState;
     if (navigator != null && navigator.canPop()) {
-      // Nếu nested navigator có thể pop, thực hiện pop
       navigator.pop();
     } else if (_currentNestedRoute != AppRouter.outboundMain) {
-      // Nếu hiện tại không phải ở màn hình chính của OutBound, thì quay lại màn hình đó
       navigator?.pushReplacementNamed(AppRouter.outboundMain);
     } else {
-      // Chỉ pop ra ngoài OutBound nếu đang ở màn hình outboundMain
       Navigator.of(context).pop();
     }
   }
 
-  // Function to toggle camera
   void _toggleCamera() {
     setState(() {
       _cameraActive = !_cameraActive;
     });
 
-    // Forward the action to the scan screen if it exists
     final scanScreenState = _scanScreenKey.currentState;
     if (scanScreenState != null) {
       scanScreenState.toggleCamera();
     }
   }
 
-  // Function to clear data
   void _clearScannedData() {
-    // Forward the action to the scan screen if it exists
     final scanScreenState = _scanScreenKey.currentState;
     if (scanScreenState != null) {
       scanScreenState.clearScannedData();
@@ -173,9 +164,7 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
         ],
         initialRoute: AppRouter.outboundMain,
         onGenerateRoute: (RouteSettings settings) {
-          // Sử dụng route manager cho nested routes
           if (settings.name == AppRouter.outboundScan) {
-            // Truyền các tham số cần thiết
             final args = {
               'key': _scanScreenKey,
               'onCameraToggle': () {
@@ -184,7 +173,6 @@ class _OutBoundScreenState extends State<OutBoundScreen> {
                 });
               },
               'onClearData': () {
-                // Cập nhật state nếu cần
               },
             };
 

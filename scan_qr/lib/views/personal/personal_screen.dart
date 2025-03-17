@@ -21,12 +21,10 @@ class PersonalScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            // Profile header with avatar and username
             Container(
               padding: const EdgeInsets.only(top: 16, bottom: 16),
               child: Column(
                 children: [
-                  // Avatar
                   Container(
                     width: 80,
                     height: 80,
@@ -37,7 +35,7 @@ class PersonalScreen extends StatelessWidget {
                     child: Center(
                       child: ClipOval(
                         child: Image.asset(
-                          'assets/images/zucca-logo.png', // Replace with actual avatar
+                          'assets/images/zucca-logo.png',
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
@@ -53,12 +51,10 @@ class PersonalScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Name
                   const Text(
                     'Justin',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  // Username
                   Text(
                     'justinisfine123',
                     style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
@@ -71,7 +67,6 @@ class PersonalScreen extends StatelessWidget {
               child: Column(
                 spacing: 10,
                 children: [
-                  // Menu items
                   _buildMenuItem(
                     context: context,
                     icon: Icons.person_pin_rounded,

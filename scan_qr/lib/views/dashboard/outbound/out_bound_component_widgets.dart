@@ -22,7 +22,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Lấy dữ liệu record tương ứng với _selectedItem
     final records = _selectedItem.isNotEmpty
         ? OutBoundBusiness.getRecords(_selectedItem)
         : <OutBoundRecord>[];
@@ -32,10 +31,8 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1) Thanh dropdown chọn type
           _buildDropdownRow(context),
 
-          // 2) Nếu đã chọn type => hiển thị bảng
           if (_selectedItem.isNotEmpty)
             _buildTableSection(records),
         ],
@@ -43,9 +40,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 1) Thanh dropdown chọn type
-  /// ---------------------------
   Widget _buildDropdownRow(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -61,7 +55,7 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
             ),
           ),
           GestureDetector(
-            key: _arrowKey, // Gắn key vào icon
+            key: _arrowKey,
             onTap: () async {
               await _showMenuDropdown(context);
             },
@@ -72,7 +66,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     );
   }
 
-  /// Hàm hiển thị menu dưới dạng popup (showMenu)
   Future<void> _showMenuDropdown(BuildContext context) async {
     final RenderBox arrowIcon =
         _arrowKey.currentContext!.findRenderObject() as RenderBox;
@@ -107,9 +100,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     }
   }
 
-  /// ---------------------------
-  /// 2) Bảng (Header + Body)
-  /// ---------------------------
   Widget _buildTableSection(List<OutBoundRecord> records) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 12, right: 8),
@@ -124,9 +114,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 2a) Header (ID | TIME | DATE | QTY | TOTAL)
-  /// ---------------------------
   Widget _buildTableHeader() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -157,13 +144,9 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 2b) Mỗi dòng record (Click để chuyển màn hình scan)
-  /// ---------------------------
   Widget _buildTableRow(BuildContext context, OutBoundRecord record) {
     return GestureDetector(
       onTap: () {
-        // Chuyển hướng sang màn hình scan
         Navigator.pushNamed(context, AppRouter.outboundScan);
       },
       child: Container(
@@ -204,9 +187,6 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
     );
   }
 
-  /// ---------------------------
-  /// 3) Cell helper
-  /// ---------------------------
   Widget _buildHeaderCell(String title) {
     return Text(
       title,

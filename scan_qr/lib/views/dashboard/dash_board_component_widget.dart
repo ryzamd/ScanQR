@@ -5,14 +5,12 @@ class DashboardWidgets {
   static Widget buildHeader(BuildContext context) {
     return Row(
       children: [
-        // Ảnh đại diện
         CircleAvatar(
           radius: 30,
           backgroundImage: AssetImage("assets/images/zucca-logo.png"),
           backgroundColor: Colors.white,
         ),
         const SizedBox(width: 16),
-        // Thông tin user
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,14 +34,14 @@ class DashboardWidgets {
 
   static Widget buildStatisticCards(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center, // canh giữa
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildCardButton(
           context: context,
           label: "TEMPORARY",
           onPressed: () => Navigator.pushNamed(context, AppRouter.temporary),
         ),
-        const SizedBox(width: 16), // khoảng cách giữa hai button
+        const SizedBox(width: 16),
         _buildCardButton(
           context: context,
           label: "OUTBOUND",
@@ -61,20 +59,16 @@ class DashboardWidgets {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        // Đảm bảo màu chữ là trắng, không bị theme ghi đè
         foregroundColor: Colors.white,
-        // Loại bỏ mọi padding mặc định
         padding: EdgeInsets.zero,
-        // Tạo bo góc
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Container(
-        // Đảm bảo kích thước (ví dụ 100x100)
         width: 150,
         height: 100,
         margin: const EdgeInsets.only(right: 0),
         decoration: BoxDecoration(
-          color: const Color(0xff58A8C6), // màu xanh theo thiết kế
+          color: const Color(0xff58A8C6),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -84,14 +78,13 @@ class DashboardWidgets {
             ),
           ],
         ),
-        // Canh chữ vào giữa
         alignment: Alignment.center,
         child: Text(
           label,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white, // Chắc chắn màu trắng
+            color: Colors.white,
           ),
         ),
       ),
@@ -165,7 +158,6 @@ class DashboardWidgets {
                   status = "Pending";
                   total = "78 PS";
                 }
-                // Tạo hàng dữ liệu
                 return Container(
                   decoration: BoxDecoration(
                     border: Border(

@@ -1,6 +1,4 @@
-// out_bound_business.dart
 class OutBoundBusiness {
-  /// Hàm lấy danh sách record theo [selectedType].
   static List<OutBoundRecord> getRecords(String selectedType) {
     if (selectedType == "SUBCONTRACTOR") {
       return [
@@ -18,7 +16,6 @@ class OutBoundBusiness {
   }
 }
 
-/// Model dữ liệu cho mỗi record.
 class OutBoundRecord {
   final String id;
   final String time;
