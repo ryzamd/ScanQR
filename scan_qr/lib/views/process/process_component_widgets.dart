@@ -28,21 +28,16 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       padding: const EdgeInsets.all(5.0),
       child: Column(
         children: [
-          // Header
           _buildTableHeader(context),
           const SizedBox(height: 3),
-          // Body
           Expanded(child: _buildTableContent(context)),
         ],
       ),
     );
   }
 
-  /// 1. Header
   Widget _buildTableHeader(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    // Xác định tỉ lệ cho 6 cột, tổng cộng = 1.0
-    // Ví dụ: SN=0.1, Sup=0.15, Time=0.15, Date=0.15, Status=0.25, Total=0.2
     final columnRatios = [0.1, 0.15, 0.15, 0.15, 0.25, 0.2];
 
     return Container(
@@ -52,7 +47,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
       ),
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       child: Table(
-        // Thay vì cố định, ta dùng width * tỉ_lệ
         columnWidths: {
           for (int i = 0; i < columnRatios.length; i++)
             i: FixedColumnWidth(screenWidth * columnRatios[i]),
@@ -73,7 +67,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// 2. Body (ListView)
   Widget _buildTableContent(BuildContext context) {
     return ListView.separated(
       itemCount: _records.length,
@@ -87,7 +80,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// 3. Row data
   Widget _buildTableRow(BuildContext context, ProcessRecord record, Color bgColor) {
     Color statusColor;
     if (record.status == "SUCCESS") {
@@ -131,7 +123,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// 4. Cell helper
   Widget _buildHeaderCell(String title) {
     return Text(
       title,
@@ -160,7 +151,6 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     );
   }
 
-  /// 5. Row tap
   void _handleRowTap(BuildContext context, ProcessRecord record) {
     switch (record.status) {
       case "SUCCESS":

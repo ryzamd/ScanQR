@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 
 class RegisterBusiness {
-  /// Kiểm tra step 0: Thông tin cá nhân
   static bool isStepComplete0({
     required String name,
     required String phoneNumber,
@@ -15,7 +14,6 @@ class RegisterBusiness {
         gender != null;
   }
 
-  /// Kiểm tra step 1: Thông tin tài khoản
   static bool isStepComplete1({
     required String username,
     required String password,
@@ -30,7 +28,6 @@ class RegisterBusiness {
         image.isNotEmpty;
   }
 
-  /// Kiểm tra step 2: Thông tin công việc
   static bool isStepComplete2({
     required String? department,
     required String? position,
@@ -38,7 +35,6 @@ class RegisterBusiness {
     return department != null && position != null;
   }
 
-  /// Kiểm tra form global + dropdowns
   static bool checkFormValid({
     required GlobalKey<FormState> formKey,
     required String? department,
@@ -50,7 +46,6 @@ class RegisterBusiness {
     return isValid;
   }
 
-  /// Xử lý submitForm (in log, hiển thị dialog, ...)
   static void submitForm({
     required BuildContext context,
     required bool isFormValid,
@@ -66,7 +61,6 @@ class RegisterBusiness {
   }) {
     if (!isFormValid) return;
 
-    // Log ra màn hình console
     developer.log('Submitted form with:');
     developer.log('Name: $name');
     developer.log('Username: $username');
@@ -77,7 +71,6 @@ class RegisterBusiness {
     developer.log('Phone Number: $phoneNumber');
     developer.log('Gender: $gender');
 
-    // Gọi callback khi thành công (VD: hiển thị dialog, pop màn hình, ...)
     onSuccess();
   }
 }

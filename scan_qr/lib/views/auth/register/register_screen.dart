@@ -15,7 +15,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -24,12 +23,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
   final TextEditingController _imageController = TextEditingController();
 
-  // Dropdown variables
   String? _selectedGender;
   String? _selectedDepartment;
   String? _selectedPosition;
 
-  // Data sample
   final List<String> _departments = [
     'IT',
     'HR',
@@ -45,7 +42,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Intern',
   ];
 
-  // Step
   int _currentStep = 0;
   final List<String> _stepTitles = ['Personal', 'Account', 'Work'];
 
@@ -60,7 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers
     _nameController.dispose();
     _phoneNumberController.dispose();
     _usernameController.dispose();
@@ -70,14 +65,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  // Validate the current form step
   void _validateForm() {
-    // Trigger field validators to show error messages
     if (_formKey.currentState != null) {
       _formKey.currentState!.validate();
     }
     
-    // Check if current step is complete
     bool isValid = false;
     
     switch (_currentStep) {
@@ -109,9 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
-  // Submit form
   void _submitForm() {
-    // Final validation before submission
     if (!RegisterBusiness.checkFormValid(
       formKey: _formKey,
       department: _selectedDepartment,
@@ -138,7 +128,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       phoneNumber: _phoneNumberController.text,
       gender: _selectedGender,
       onSuccess: () {
-        // Hiển thị dialog thành công
         CustomDialog.notice(
           context: context,
           title: 'NOTICE',
@@ -150,7 +139,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Kiểm tra step có hoàn thành không
   bool _isStepComplete(int step) {
     switch (step) {
       case 0:
@@ -176,9 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  // Go to next step with validation
   void _goToNextStep() {
-    // Validate current step first
     if (_isStepComplete(_currentStep)) {
       setState(() {
         _currentStep++;
@@ -186,19 +172,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
        _formKey.currentState?.reset();
     } else {
-      // Show error message if step is incomplete
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please complete all required fields'),
           backgroundColor: Colors.red,
         ),
       );
-      // Validate form to show field errors
        _formKey.currentState?.validate();
     }
   }
 
-  // Go to previous step
   void _goToPreviousStep() {
     setState(() {
       _currentStep--;
@@ -207,7 +190,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _formKey.currentState?.reset();
   }
 
-  // Step indicator UI
   Widget _buildStepIndicator() {
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -280,13 +262,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Form content with scrollable area
   Widget _buildFormContent() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 80), // Space for buttons
+          padding: const EdgeInsets.only(bottom: 80),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (child, animation) {
@@ -302,7 +283,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Current step content
   Widget _buildCurrentStep() {
     switch (_currentStep) {
       case 0:
@@ -364,7 +344,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  // Bottom navigation buttons
   Widget _buildBottomButtons() {
     return Container(
       height: 60,

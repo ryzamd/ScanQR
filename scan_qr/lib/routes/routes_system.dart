@@ -11,7 +11,6 @@ import 'package:scan_qr/views/personal/personal_profile_screen.dart';
 import 'package:scan_qr/views/process/process_screen.dart';
 
 class AppRouter {
-  // Các route chính của app
   static const String login = '/';
   static const String register = '/register';
   static const String dashboard = '/dashboard';
@@ -21,11 +20,9 @@ class AppRouter {
   static const String outbound = '/outbound';
   static const String temporary = '/temporary';
   
-  // Các route lồng nhau của outbound
   static const String outboundMain = '/outbound-main';
   static const String outboundScan = '/outbound-scan';
   
-  // Quản lý route chính của app
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
@@ -69,7 +66,6 @@ class AppRouter {
           builder: (_) => const TemporaryScreen(),
         );
       default:
-        // Fallback route
         return MaterialPageRoute(
           builder: (_) => Scaffold(
             body: Center(
@@ -80,7 +76,6 @@ class AppRouter {
     }
   }
   
-  // Quản lý route lồng nhau của outbound screen
   static Route<dynamic>? onGenerateOutboundRoute(RouteSettings settings) {
     switch (settings.name) {
       case outboundMain:
@@ -100,7 +95,6 @@ class AppRouter {
             ),
           );
         }
-        // Fallback nếu không có arguments
         return MaterialPageRoute(
           settings: settings,
           builder: (context) => OutboundCategoryScanScreen(

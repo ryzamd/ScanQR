@@ -21,12 +21,12 @@ class MainActivity : FlutterActivity() {
             .setStreamHandler(object : EventChannel.StreamHandler {
                 override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
                     eventSink = events
-                    Log.d("MainActivity", "✅ EventChannel Listener Started")
+                    Log.d("MainActivity", "EventChannel Listener Started")
                 }
 
                 override fun onCancel(arguments: Any?) {
                     eventSink = null
-                    Log.d("MainActivity", "❌ EventChannel Listener Stopped")
+                    Log.d("MainActivity", "EventChannel Listener Stopped")
                 }
             })
     }
@@ -41,13 +41,13 @@ class MainActivity : FlutterActivity() {
 
     fun sendScanDataToFlutter(scanData: String) {
         if (eventSink == null) {
-            Log.e("MainActivity", "❌ EventSink is NULL, cannot send data!")
+            Log.e("MainActivity", "EventSink is NULL, cannot send data!")
             return
         }
 
         handler.post {
             eventSink?.success(scanData)
-            Log.d("MainActivity", "📡 Sending Scan Data to Flutter: $scanData")
+            Log.d("MainActivity", "Sending Scan Data to Flutter: $scanData")
         }
     }
 }
