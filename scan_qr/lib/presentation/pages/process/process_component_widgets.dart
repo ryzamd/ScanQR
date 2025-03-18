@@ -58,7 +58,7 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
 
   Widget _buildTableHeader(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final columnRatios = [0.1, 0.15, 0.15, 0.15, 0.25, 0.2];
+    final columnRatios = [0.15, 0.15, 0.15, 0.15, 0.2, 0.15];
 
     return Container(
       decoration: BoxDecoration(
@@ -115,7 +115,7 @@ class _ProcessingTableWidgetState extends State<ProcessingTableWidget> {
     }
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final columnRatios = [0.1, 0.15, 0.15, 0.15, 0.25, 0.2];
+    final columnRatios = [0.15, 0.15, 0.15, 0.15, 0.2, 0.15];
 
     return GestureDetector(
       onLongPress: () => _handleRowTap(context, record),

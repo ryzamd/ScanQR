@@ -1,4 +1,3 @@
-// file: lib/domain/usecases/save_scan_data_usecase.dart
 import 'package:scan_qr/domain/repositories/scan_repository.dart';
 
 class SaveScanDataUseCase {

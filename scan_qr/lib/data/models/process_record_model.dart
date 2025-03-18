@@ -1,4 +1,3 @@
-// file: lib/data/models/process_record_model.dart
 import 'package:scan_qr/domain/entities/process_record.dart';
 
 class ProcessRecordModel {
