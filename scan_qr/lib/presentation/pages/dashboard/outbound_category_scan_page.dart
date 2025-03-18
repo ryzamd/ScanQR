@@ -6,24 +6,28 @@ import 'package:scan_qr/core/constants/style_contants.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_bloc.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_event.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_state.dart';
+import 'package:scan_qr/presentation/mixins/scanner_page_mixin.dart';
 import 'package:scan_qr/presentation/widgets/scanner_screens/scanner_screen.dart';
 
 
 class OutboundCategoryScanPage extends StatefulWidget {
   final VoidCallback? onCameraToggle;
   final VoidCallback? onClearData;
+  final String? selectedType;
 
   const OutboundCategoryScanPage({
     super.key,
     this.onCameraToggle,
     this.onClearData,
+    this.selectedType,
   });
 
   @override
   State<OutboundCategoryScanPage> createState() => OutboundCategoryScanPageState();
 }
 
-class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with WidgetsBindingObserver {
+class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> 
+    with WidgetsBindingObserver, ScannerPageMixin<OutboundCategoryScanPage> {
   final MobileScannerController _controller = MobileScannerController();
   final FocusNode _focusNode = FocusNode();
   static const EventChannel _eventChannel = EventChannel("com.example.scan_qr/scanner");
@@ -31,32 +35,41 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
   String? _scanError;
 
   void _onScanReceived(dynamic scanData) {
-    debugPrint("📡 Real-time Scan Data: $scanData");
-
-    if (scanData == "No Scan Data Found") {
-      debugPrint("Ignoring invalid scan data.");
+    debugPrint("📡 Dữ liệu quét nhận được: $scanData");
+    
+    if (scanData == null || scanData.toString().isEmpty || scanData == "No Scan Data Found") {
+      debugPrint("⚠️ Dữ liệu quét không hợp lệ, bỏ qua");
       return;
     }
 
+    // Phản hồi rung khi nhận được dữ liệu
+    HapticFeedback.mediumImpact();
+
+    // Gửi sự kiện đến BLoC
     final scanBloc = context.read<ScanBloc>();
-    if (scanBloc.state is ScanActive) {
-      final currentState = scanBloc.state as ScanActive;
-      if (!currentState.scannedData.any((row) => row.contains(scanData))) {
-        final updatedData = List<List<String>>.from(currentState.scannedData);
-        updatedData.add([scanData, "Pending", "1", "0.00"]);
-        
-        scanBloc.add(SaveScannedDataRequested(updatedData));
-        setState(() {
-          _scanError = null;
-        });
-      }
-    }
+    final String scanText = scanData.toString();
+    
+    // Sử dụng ExternalScanDetected event thay vì SaveScannedDataRequested
+    scanBloc.add(ExternalScanDetected(scanText));
+    
+    // Hiển thị thông báo tạm thời
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã quét được mã: $scanText'),
+        duration: const Duration(seconds: 1),
+        backgroundColor: Colors.green,
+      ),
+    );
+    
+    setState(() {
+      _scanError = null;
+    });
   }
 
   void _onScanError(Object error) {
-    debugPrint("Error receiving scan data: $error");
+    debugPrint("❌ Lỗi nhận dữ liệu quét: $error");
     setState(() {
-      _scanError = "Failed to process scan: $error";
+      _scanError = "Lỗi xử lý dữ liệu quét: $error";
     });
   }
 
@@ -66,16 +79,21 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
 
   @override
   void initState() {
-    super.initState();
+    super.initState(); // Gọi ScannerPageMixin.initState() được gọi ở đây
     WidgetsBinding.instance.addObserver(this);
     _focusNode.requestFocus();
 
+    debugPrint("🔌 Đang thiết lập lắng nghe EventChannel");
     _eventChannel.receiveBroadcastStream().listen(
       _onScanReceived,
       onError: _onScanError,
     );
     
-    context.read<ScanBloc>().add(ScanStarted());
+    // Chỉ khởi động với ScanStarted, KHÔNG gọi ToggleCameraRequested
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ScanBloc>().add(ScanStarted());
+      debugPrint("▶️ Đã khởi động ScanBloc với camera mặc định tắt");
+    });
   }
 
   @override
@@ -83,7 +101,7 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     _focusNode.dispose();
-    super.dispose();
+    super.dispose(); // ScannerPageMixin.dispose() được gọi ở đây
   }
 
   @override
@@ -96,18 +114,22 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
     
     if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
       _controller.pause();
+      debugPrint("⏸️ Camera tạm dừng do ứng dụng không hiển thị");
     } else if (state == AppLifecycleState.resumed) {
       _controller.start();
+      debugPrint("▶️ Camera khởi động lại do ứng dụng hiển thị");
     }
   }
 
   Future<void> _resetScanner() async {
+    debugPrint("🔄 Đang khởi động lại scanner");
     await _controller.stop();
     await _controller.start();
     context.read<ScanBloc>().add(ScanStarted());
   }
 
   void toggleCamera() {
+    debugPrint("🔄 Chuyển đổi trạng thái camera");
     context.read<ScanBloc>().add(ToggleCameraRequested());
     
     if (widget.onCameraToggle != null) {
@@ -116,6 +138,7 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
   }
 
   void clearScannedData() {
+    debugPrint("🧹 Xóa dữ liệu đã quét");
     context.read<ScanBloc>().add(ClearScannedDataRequested());
     
     if (widget.onClearData != null) {
@@ -124,9 +147,19 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
   }
 
   void saveScannedData() {
+    debugPrint("💾 Lưu dữ liệu đã quét");
     final scanBloc = context.read<ScanBloc>();
     if (scanBloc.state is ScanActive) {
       final scannedData = (scanBloc.state as ScanActive).scannedData;
+      if (scannedData.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Không có dữ liệu để lưu'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
       scanBloc.add(SaveScannedDataRequested(scannedData));
     }
   }
@@ -150,7 +183,7 @@ class OutboundCategoryScanPageState extends State<OutboundCategoryScanPage> with
         }
 
         return SharedScannerScreen(
-          title: const Text(""),
+          title: Text(""),
           showAppBar: false,
           scannerController: _controller,
           cameraActive: cameraActive,

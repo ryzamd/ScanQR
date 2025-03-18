@@ -26,7 +26,7 @@ class GeneralScreenScaffold extends StatelessWidget {
     final Widget? leadingButton =
         showBackButton && Navigator.canPop(context)
             ? IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back, color: Colors.white,),
               onPressed: () => Navigator.pop(context),
             )
             : null;

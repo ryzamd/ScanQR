@@ -377,7 +377,6 @@ class _RegisterPageState extends State<RegisterPage> {
               if (_currentStep > 0)
                 ElevatedButton.icon(
                   onPressed: state is AuthLoading ? null : _goToPreviousStep,
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
                   label: const Text(
                     'BACK',
                     style: TextStyle(color: Colors.black),
@@ -404,7 +403,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             : (_isStepComplete(_currentStep)
                                 ? _goToNextStep
                                 : _validateForm),
-                    icon: const Icon(Icons.arrow_forward, color: Colors.white),
                     label: const Text(
                       'NEXT',
                       style: TextStyle(color: Colors.white),
@@ -436,7 +434,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 strokeWidth: 2,
                               ),
                             )
-                            : const Icon(Icons.check, color: Colors.white),
+                            : null,
                     label: const Text(
                       'REGISTER',
                       style: TextStyle(color: Colors.white),
@@ -467,6 +465,7 @@ class _RegisterPageState extends State<RegisterPage> {
         "REGISTER",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
+      showBackButton: true,
       isSubScreen: false,
       body: Form(
         key: _formKey,

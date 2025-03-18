@@ -89,7 +89,8 @@ class SharedScannerScreenState extends State<SharedScannerScreen>
       appBar:
           widget.showAppBar
               ? AppBar(
-                titleSpacing: -8,
+                titleSpacing: 8,
+                leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back, color: Colors.white,),),
                 title: widget.title,
                 backgroundColor: widget.appBarColor ?? ColorsConstants.primaryColor,
                 elevation: widget.appBarElevation,

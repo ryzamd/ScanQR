@@ -21,3 +21,10 @@ class SaveScannedDataRequested extends ScanEvent {
 class ClearScannedDataRequested extends ScanEvent {}
 
 class ToggleCameraRequested extends ScanEvent {}
+
+// Sự kiện mới cho scan từ thiết bị vật lý
+class ExternalScanDetected extends ScanEvent {
+  final String scanData;
+  
+  ExternalScanDetected(this.scanData);
+}

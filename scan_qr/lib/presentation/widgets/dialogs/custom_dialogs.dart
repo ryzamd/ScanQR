@@ -14,7 +14,6 @@ class CustomDialog {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) async {
-    // Define colors based on dialog type
     Color titleColor;
     Color confirmButtonColor;
 
@@ -56,6 +55,7 @@ class CustomDialog {
           insetPadding: const EdgeInsets.all(35),
           child: Container(
             height: 200,
+            width: 360,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(5),

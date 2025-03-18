@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scan_qr/presentation/blocs/outbound/outbound_bloc.dart';
+import 'package:scan_qr/presentation/blocs/outbound/outbound_state.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_bloc.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_event.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_state.dart';
@@ -51,32 +53,36 @@ class _OutboundPageState extends State<OutboundPage> {
           );
         } else if (state is ScanError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
       },
       builder: (context, state) {
+        String title = "OUTBOUND CATEGORY";
+        if (_currentNestedRoute == AppRouter.outboundScan &&
+            context.watch<OutboundBloc>().state is OutboundLoaded) {
+          final selectedType =
+              (context.watch<OutboundBloc>().state as OutboundLoaded)
+                  .selectedType;
+          if (selectedType.isNotEmpty) {
+            title = selectedType;
+          }
+        }
         return GeneralScreenScaffold(
-          title: Row(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment:
-                      checkIsSubScreen() ? const Alignment(-0.5, 0) : Alignment.center,
-                  child: const Text(
-                    "OUTBOUND CATEGORY",
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+          title: Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            alignment: Alignment.center,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ],
+            ),
           ),
           isSubScreen: false,
           showBackButton: checkIsSubScreen(),
@@ -86,29 +92,36 @@ class _OutboundPageState extends State<OutboundPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: state is ScanSaving
-                        ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                        : const Icon(Icons.save, color: Colors.black),
-                    onPressed: state is ScanSaving
-                        ? null
-                        : () {
-                            if (state is ScanActive && state.scannedData.isNotEmpty) {
-                              context.read<ScanBloc>().add(
-                                SaveScannedDataRequested(state.scannedData),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('No data to save'),
-                                  backgroundColor: Colors.orange,
-                                ),
-                              );
-                            }
-                          },
+                    icon:
+                        state is ScanSaving
+                            ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            )
+                            : const Icon(Icons.save, color: Colors.white),
+                    onPressed:
+                        state is ScanSaving
+                            ? null
+                            : () {
+                              if (state is ScanActive &&
+                                  state.scannedData.isNotEmpty) {
+                                context.read<ScanBloc>().add(
+                                  SaveScannedDataRequested(state.scannedData),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('No data to save'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                              }
+                            },
                     tooltip: "Save scanned data",
                   ),
                   IconButton(
                     icon: Icon(
+                      color: Colors.white,
                       state is ScanActive && state.cameraActive
                           ? Icons.camera_alt
                           : Icons.camera_alt_outlined,
@@ -116,118 +129,134 @@ class _OutboundPageState extends State<OutboundPage> {
                     onPressed: () {
                       context.read<ScanBloc>().add(ToggleCameraRequested());
                     },
-                    tooltip: state is ScanActive && state.cameraActive
-                        ? "Turn off camera"
-                        : "Turn on camera",
+                    tooltip:
+                        state is ScanActive && state.cameraActive
+                            ? "Turn off camera"
+                            : "Turn on camera",
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline),
+                    icon: const Icon(Icons.delete_outline, color: Colors.white),
                     onPressed: () async {
                       await CustomDialog.warning(
                         context: context,
                         title: "Warning",
-                        message: "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
+                        message:
+                            "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
                         confirmLabel: null,
                         cancelLabel: null,
                         onConfirm: () {
-                          context.read<ScanBloc>().add(ClearScannedDataRequested());
-                       },
-                     );
-                   },
-                   tooltip: "Clear all scanned items",
-                 ),
-                 IconButton(
-                   icon: const Icon(Icons.directions_run),
-                   onPressed: () async {
-                     await CustomDialog.warning(
-                       context: context,
-                       title: "Warning",
-                       message: "Are you sure about deleting all the scanned data?",
-                       confirmLabel: null,
-                       cancelLabel: null,
-                       onConfirm: () {
-                         _handleBackButton();
-                       },
-                     );
-                   },
-                 ),
-               ],
-             ),
-         ],
-         body: Navigator(
-           key: _nestedNavKey,
-           observers: [
-             NestedNavigatorObserver(
-               onNavigation: (Route<dynamic>? route) {
-                 if (!mounted) return;
-                 if (route is MaterialPageRoute && route.settings.name != null) {
-                   final routeName = route.settings.name!;
-                   if (routeName.startsWith('/outbound-')) {
-                     setState(() {
-                       _currentNestedRoute = routeName;
-                     });
-                   } else {
-                     setState(() {
-                       _currentNestedRoute = null;
-                     });
-                   }
-                 }
-               },
-             ),
-           ],
-           initialRoute: AppRouter.outboundMain,
-           onGenerateRoute: (RouteSettings settings) {
-             if (settings.name == AppRouter.outboundScan) {
-               final args = {
-                 'key': _scanScreenKey,
-                 'onCameraToggle': () {
-                   context.read<ScanBloc>().add(ToggleCameraRequested());
-                 },
-                 'onClearData': () {
-                   context.read<ScanBloc>().add(ClearScannedDataRequested());
-                 },
-               };
+                          context.read<ScanBloc>().add(
+                            ClearScannedDataRequested(),
+                          );
+                        },
+                      );
+                    },
+                    tooltip: "Clear all scanned items",
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.directions_run, color: Colors.white),
+                    onPressed: () async {
+                      await CustomDialog.warning(
+                        context: context,
+                        title: "Warning",
+                        message:
+                            "Are you sure about deleting all the scanned data?",
+                        confirmLabel: null,
+                        cancelLabel: null,
+                        onConfirm: () {
+                          _handleBackButton();
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+          ],
+          body: Navigator(
+            key: _nestedNavKey,
+            observers: [
+              NestedNavigatorObserver(
+                onNavigation: (Route<dynamic>? route) {
+                  if (!mounted) return;
+                  if (route is MaterialPageRoute &&
+                      route.settings.name != null) {
+                    final routeName = route.settings.name!;
+                    if (routeName.startsWith('/outbound-')) {
+                      setState(() {
+                        _currentNestedRoute = routeName;
+                      });
+                    } else {
+                      setState(() {
+                        _currentNestedRoute = null;
+                      });
+                    }
+                  }
+                },
+              ),
+            ],
+            initialRoute: AppRouter.outboundMain,
+            onGenerateRoute: (RouteSettings settings) {
+              if (settings.name == AppRouter.outboundScan) {
+                final outboundBloc = context.read<OutboundBloc>();
+                String selectedType = "";
 
-               final updatedSettings = RouteSettings(
-                 name: settings.name,
-                 arguments: args,
-               );
+                if (outboundBloc.state is OutboundLoaded) {
+                  selectedType =
+                      (outboundBloc.state as OutboundLoaded).selectedType;
+                  debugPrint("Selected type for scan page: $selectedType");
+                }
 
-               return AppRouter.onGenerateOutboundRoute(updatedSettings);
-             }
+                final args = {
+                  'key': _scanScreenKey,
+                  'selectedType': selectedType,
+                  'onCameraToggle': () {
+                    context.read<ScanBloc>().add(ToggleCameraRequested());
+                  },
+                  'onClearData': () {
+                    context.read<ScanBloc>().add(ClearScannedDataRequested());
+                  },
+                };
 
-             return AppRouter.onGenerateOutboundRoute(settings);
-           },
-         ),
-         bottomNavigationBar: const NavbarWidget(),
-       );
-     },
-   );
- }
+                final updatedSettings = RouteSettings(
+                  name: settings.name,
+                  arguments: args,
+                );
+
+                return AppRouter.onGenerateOutboundRoute(updatedSettings);
+              }
+
+              return AppRouter.onGenerateOutboundRoute(settings);
+            },
+          ),
+          bottomNavigationBar: const NavbarWidget(),
+        );
+      },
+    );
+  }
 }
 
 class NestedNavigatorObserver extends NavigatorObserver {
- final void Function(Route<dynamic>?) onNavigation;
+  final void Function(Route<dynamic>?) onNavigation;
 
- NestedNavigatorObserver({required this.onNavigation});
+  NestedNavigatorObserver({required this.onNavigation});
 
- @override
- void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-   debugPrint('didPush: ${route.settings.name}');
-   super.didPush(route, previousRoute);
-   WidgetsBinding.instance.addPostFrameCallback((_) {
-     onNavigation(route);
-   });
- }
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    debugPrint('didPush: ${route.settings.name}');
+    super.didPush(route, previousRoute);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onNavigation(route);
+    });
+  }
 
- @override
- void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-   debugPrint(
-     'didPop: ${route.settings.name} -> ${previousRoute?.settings.name}',
-   );
-   super.didPop(route, previousRoute);
-   WidgetsBinding.instance.addPostFrameCallback((_) {
-     onNavigation(previousRoute);
-   });
- }
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    debugPrint(
+      'didPop: ${route.settings.name} -> ${previousRoute?.settings.name}',
+    );
+    super.didPop(route, previousRoute);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onNavigation(previousRoute);
+    });
+  }
 }
