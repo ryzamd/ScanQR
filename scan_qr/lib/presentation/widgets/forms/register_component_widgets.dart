@@ -43,85 +43,87 @@ Widget buildPersonalInfoStep({
   required String? selectedGender,
   required void Function(String?) onGenderChanged,
 }) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Thông tin cá nhân',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const Divider(),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: nameController,
-                decoration: buildInputDecoration(
-                  context: context,
-                  labelText: 'Họ và tên',
-                  prefixIcon: const Icon(Icons.person),
+  return SizedBox(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Thông tin cá nhân',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập họ và tên';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: phoneController,
-                decoration: buildInputDecoration(
-                  context: context,
-                  labelText: 'Số điện thoại',
-                  prefixIcon: const Icon(Icons.phone),
+                const Divider(),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: nameController,
+                  decoration: buildInputDecoration(
+                    context: context,
+                    labelText: 'Họ và tên',
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập họ và tên';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập số điện thoại';
-                  }
-                  if (!RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$').hasMatch(value)) {
-                    return 'Số điện thoại không hợp lệ';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: buildInputDecoration(
-                  context: context,
-                  labelText: 'Giới tính',
-                  prefixIcon: const Icon(Icons.people),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: phoneController,
+                  decoration: buildInputDecoration(
+                    context: context,
+                    labelText: 'Số điện thoại',
+                    prefixIcon: const Icon(Icons.phone),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập số điện thoại';
+                    }
+                    if (!RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$').hasMatch(value)) {
+                      return 'Số điện thoại không hợp lệ';
+                    }
+                    return null;
+                  },
                 ),
-                value: selectedGender,
-                hint: const Text('Chọn giới tính'),
-                items: const [
-                  DropdownMenuItem(value: 'Nam', child: Text('Nam')),
-                  DropdownMenuItem(value: 'Nữ', child: Text('Nữ')),
-                  DropdownMenuItem(value: 'Khác', child: Text('Khác')),
-                ],
-                onChanged: onGenderChanged,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng chọn giới tính';
-                  }
-                  return null;
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  decoration: buildInputDecoration(
+                    context: context,
+                    labelText: 'Giới tính',
+                    prefixIcon: const Icon(Icons.people),
+                  ),
+                  value: selectedGender,
+                  hint: const Text('Chọn giới tính'),
+                  items: const [
+                    DropdownMenuItem(value: 'Nam', child: Text('Nam')),
+                    DropdownMenuItem(value: 'Nữ', child: Text('Nữ')),
+                    DropdownMenuItem(value: 'Khác', child: Text('Khác')),
+                  ],
+                  onChanged: onGenderChanged,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng chọn giới tính';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 

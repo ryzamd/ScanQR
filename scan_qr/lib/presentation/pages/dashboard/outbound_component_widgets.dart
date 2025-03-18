@@ -56,23 +56,33 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
 
   Widget _buildDropdownRow(BuildContext context) {
     return Container(
+      width: double.infinity,
       color: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            _selectedItem.isEmpty ? "SELECT TYPE" : _selectedItem,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      child: Padding(
+        // Compensate for any visual offset
+        padding: EdgeInsets.only(left: 24.0), // Adjust this value as needed
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _selectedItem.isEmpty ? "SELECT TYPE" : _selectedItem,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GestureDetector(
+                key: _arrowKey,
+                onTap: () async {
+                  await _showMenuDropdown(context);
+                },
+                child: const Icon(Icons.arrow_drop_down),
+              ),
+            ],
           ),
-          GestureDetector(
-            key: _arrowKey,
-            onTap: () async {
-              await _showMenuDropdown(context);
-            },
-            child: const Icon(Icons.arrow_drop_down),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -143,11 +153,11 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
       ),
       child: Table(
         columnWidths: {
-          0: FixedColumnWidth(30),
-          1: FixedColumnWidth(65),
-          2: FixedColumnWidth(90),
-          3: FixedColumnWidth(70),
-          4: FixedColumnWidth(70),
+          0: FractionColumnWidth(0.1),
+          1: FractionColumnWidth(0.2),
+          2: FractionColumnWidth(0.3),
+          3: FractionColumnWidth(0.2),
+          4: FractionColumnWidth(0.2),
         },
         children: [
           TableRow(
@@ -185,11 +195,11 @@ class _CustomMenuWidgetState extends State<CustomMenuWidget> {
         ),
         child: Table(
           columnWidths: const {
-            0: FixedColumnWidth(30),
-            1: FixedColumnWidth(65),
-            2: FixedColumnWidth(90),
-            3: FixedColumnWidth(70),
-            4: FixedColumnWidth(70),
+            0: FractionColumnWidth(0.1),
+            1: FractionColumnWidth(0.2),
+            2: FractionColumnWidth(0.3),
+            3: FractionColumnWidth(0.2),
+            4: FractionColumnWidth(0.2),
           },
           children: [
             TableRow(

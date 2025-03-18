@@ -9,7 +9,7 @@ class OutboundRepositoryImpl implements OutboundRepository {
 
     if (selectedType == "SUBCONTRACTOR") {
       records = [
-        OutboundRecordModel(id: "SC1", time: "9:00 AM", date: "01/01/2023", quantity: "50/100", status: "Pending"),
+        OutboundRecordModel(id: "SC1", time: "9:00 AM", date: "01/01/2023", quantity: "50/50", status: "Pending"),
         OutboundRecordModel(id: "SC2", time: "9:30 AM", date: "01/01/2023", quantity: "100/100", status: "Completed"),
       ];
     } else if (selectedType == "WORK SHOP") {

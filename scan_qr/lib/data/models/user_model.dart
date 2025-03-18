@@ -1,4 +1,3 @@
-// file: lib/data/models/user_model.dart
 import 'package:scan_qr/domain/entities/user.dart';
 
 class UserModel {

@@ -8,9 +8,9 @@ import 'package:scan_qr/core/utils/styles/scanner_styles.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_bloc.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_event.dart';
 import 'package:scan_qr/presentation/blocs/scan/scan_state.dart';
+import 'package:scan_qr/presentation/mixins/scanner_page_mixin.dart';
 import 'package:scan_qr/presentation/widgets/dialogs/custom_dialogs.dart';
 import 'package:scan_qr/presentation/widgets/scanner_screens/scanner_screen.dart';
-
 
 class TemporaryPage extends StatefulWidget {
   const TemporaryPage({super.key});
@@ -19,40 +19,68 @@ class TemporaryPage extends StatefulWidget {
   State<TemporaryPage> createState() => _TemporaryPageState();
 }
 
-class _TemporaryPageState extends State<TemporaryPage> with WidgetsBindingObserver {
+class _TemporaryPageState extends State<TemporaryPage> 
+    with WidgetsBindingObserver, ScannerPageMixin<TemporaryPage> {
   final MobileScannerController _controller = MobileScannerController();
   final FocusNode _focusNode = FocusNode();
   static const EventChannel _eventChannel = EventChannel("com.example.scan_qr/scanner");
   String? _scanError;
 
   void _onScanReceived(dynamic scanData) {
-    debugPrint("📡 Real-time Scan Data: $scanData");
-
-    if (scanData == "❌ No Scan Data Found") {
-      debugPrint("⚠️ Ignoring invalid scan data.");
+    debugPrint("🔍 Dữ liệu quét nhận được: $scanData");
+    
+    if (scanData == null || scanData.toString().isEmpty || scanData == "No Scan Data Found") {
+      debugPrint("⚠️ Dữ liệu quét không hợp lệ, bỏ qua");
       return;
     }
 
+    // Phản hồi rung khi nhận được dữ liệu
+    HapticFeedback.mediumImpact();
+
+    // Gửi sự kiện đến BLoC
     final scanBloc = context.read<ScanBloc>();
+    final String scanText = scanData.toString();
+    
     if (scanBloc.state is ScanActive) {
       final currentState = scanBloc.state as ScanActive;
-      if (!currentState.scannedData.any((row) => row.contains(scanData))) {
-        final updatedData = List<List<String>>.from(currentState.scannedData);
-        updatedData.add([scanData, "Pending", "1", "0.00"]);
+      
+      // Kiểm tra xem mã này đã tồn tại chưa
+      if (!currentState.scannedData.any((item) => item.isNotEmpty && item[0] == scanText)) {
+        // Thêm dữ liệu vào BLoC
+        scanBloc.add(ExternalScanDetected(scanText));
+        debugPrint("✅ Đã thêm mã quét mới: $scanText");
         
-        final ScanBloc scanBloc = context.read<ScanBloc>();
-        scanBloc.add(SaveScannedDataRequested(updatedData));
+        // Hiển thị thông báo
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Đã quét được mã: $scanText'),
+            duration: const Duration(seconds: 1),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
         setState(() {
           _scanError = null;
         });
+      } else {
+        debugPrint("⚠️ Mã đã tồn tại: $scanText");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Mã đã tồn tại: $scanText'),
+            duration: const Duration(seconds: 1),
+            backgroundColor: Colors.orange,
+          ),
+        );
       }
+    } else {
+      debugPrint("⚠️ Trạng thái BLoC không phải ScanActive: ${scanBloc.state}");
     }
   }
 
   void _onScanError(Object error) {
-    debugPrint("❌ Error receiving scan data: $error");
+    debugPrint("❌ Lỗi nhận dữ liệu quét: $error");
     setState(() {
-      _scanError = "Failed to process scan: $error";
+      _scanError = "Lỗi xử lý dữ liệu quét: $error";
     });
   }
 
@@ -75,7 +103,7 @@ class _TemporaryPageState extends State<TemporaryPage> with WidgetsBindingObserv
       if (scannedData.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No data to save'),
+            content: Text('Không có dữ liệu để lưu'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -86,31 +114,33 @@ class _TemporaryPageState extends State<TemporaryPage> with WidgetsBindingObserv
     }
   }
 
-@override
-void initState() {
-  super.initState();
-  WidgetsBinding.instance.addObserver(this);
-  _focusNode.requestFocus();
+  @override
+  void initState() {
+    super.initState(); // Gọi ScannerPageMixin.initState() được gọi ở đây
+    WidgetsBinding.instance.addObserver(this);
+    _focusNode.requestFocus();
 
-  _eventChannel.receiveBroadcastStream().listen(
-    _onScanReceived,
-    onError: _onScanError,
-  );
+    debugPrint("🔌 Đang thiết lập lắng nghe EventChannel");
+    _eventChannel.receiveBroadcastStream().listen(
+      _onScanReceived,
+      onError: _onScanError,
+    );
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (mounted) {
-      context.read<ScanBloc>().add(ScanStarted());
-    }
-  });
-}
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        // Chỉ khởi động với camera tắt, KHÔNG gọi ToggleCameraRequested
+        context.read<ScanBloc>().add(ScanStarted());
+        debugPrint("▶️ Đã khởi động ScanBloc với camera mặc định tắt");
+      }
+    });
+  }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     _focusNode.dispose();
-    super.dispose();
+    super.dispose(); // ScannerPageMixin.dispose() được gọi ở đây
   }
 
   @override
@@ -122,7 +152,7 @@ void initState() {
         if (state is ScanSaveSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Data saved successfully to: ${state.filePath}'),
+              content: Text('Dữ liệu đã được lưu thành công vào: ${state.filePath}'),
               backgroundColor: Colors.green,
             ),
           );
@@ -156,7 +186,7 @@ void initState() {
           focusNode: _focusNode,
           autofocus: true,
           onKeyEvent: (KeyEvent event) async {
-            debugPrint("🔍 Event Captured: ${event.runtimeType}");
+            debugPrint("⌨️ Sự kiện bàn phím: ${event.runtimeType}");
           },
           child: SharedScannerScreen(
             title: const Text(
@@ -176,30 +206,30 @@ void initState() {
                 child: IconButton(
                   icon: isSaving
                     ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                    : const Icon(Icons.save, color: Colors.black),
+                    : const Icon(Icons.save, color: Colors.white),
                   onPressed: isSaving ? null : _saveScannedData,
-                  tooltip: "Save scanned data",
+                  tooltip: "Lưu dữ liệu đã quét",
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: IconButton(
                   icon: Icon(
-                    cameraActive ? Icons.camera_alt : Icons.camera_alt,
-                    color: Colors.black,
+                    cameraActive ? Icons.camera_alt : Icons.camera_alt_outlined,
+                    color: Colors.white,
                   ),
                   onPressed: _toggleCamera,
-                  tooltip: cameraActive ? "Turn off camera" : "Turn on camera",
+                  tooltip: cameraActive ? "Tắt camera" : "Bật camera",
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.black),
+                  icon: const Icon(Icons.delete_outline, color: Colors.white),
                   onPressed: () async {
                     final result = await CustomDialog.warning(
                       context: context,
-                      title: "Warning",
+                      title: "Cảnh báo",
                       message: "Bạn có chắc chắn muốn xóa tất cả dữ liệu đã quét?",
                       confirmLabel: null,
                       cancelLabel: null,
@@ -212,28 +242,7 @@ void initState() {
                       _clearScannedData();
                     }
                   },
-                  tooltip: "Clear all scanned items",
-                ),
-              ),
-            ],
-            bottomActions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: ElevatedButton.icon(
-                  icon: isSaving
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Icon(Icons.save),
-                  label: Text(isSaving ? "Saving..." : "Save Data"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: isSaving ? null : _saveScannedData,
+                  tooltip: "Xóa toàn bộ dữ liệu đã quét",
                 ),
               ),
             ],

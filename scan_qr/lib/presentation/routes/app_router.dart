@@ -102,6 +102,7 @@ class AppRouter {
                   key: args['key'],
                   onCameraToggle: args['onCameraToggle'],
                   onClearData: args['onClearData'],
+                  selectedType: args['selectedType'],
                 ),
           );
         }
