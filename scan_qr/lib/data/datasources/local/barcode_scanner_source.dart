@@ -1,4 +1,3 @@
-// file: lib/data/datasources/local/barcode_scanner_source.dart
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 

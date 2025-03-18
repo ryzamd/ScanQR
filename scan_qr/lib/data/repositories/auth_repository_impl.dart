@@ -1,4 +1,3 @@
-// file: lib/data/repositories/auth_repository_impl.dart
 import 'dart:developer' as developer;
 import 'package:scan_qr/data/models/auth_user_model.dart';
 import 'package:scan_qr/data/models/user_model.dart';

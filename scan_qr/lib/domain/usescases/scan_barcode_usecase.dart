@@ -1,4 +1,3 @@
-// file: lib/domain/usecases/scan_barcode_usecase.dart
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:scan_qr/core/constants/key_codes.dart';

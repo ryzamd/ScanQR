@@ -1,4 +1,3 @@
-// file: lib/presentation/widgets/dashboard/outbound_component_widgets.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_qr/domain/entities/outbound_record.dart';

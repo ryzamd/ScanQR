@@ -1,4 +1,3 @@
-// file: lib/domain/entities/outbound_record.dart
 class OutboundRecord {
   final String id;
   final String time;
